@@ -1,0 +1,154 @@
+﻿@model MVCCRUDAJAX.Models.Employee
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Enter Employee</title>
+
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnSave").click(function () {
+               
+                if ($("#txtemployeeName").val() == "") {
+                    alert("Enter Employee Name");
+                    return false;
+                }
+
+                if ($("#txtemployeeCity").val() == "") {
+                    alert("Enter Employee City");
+                    return false;
+                }
+
+                if ($("#txtemployeeSalary").val() == "") {
+                    alert("Enter Employee Salary");
+                    return false;
+                }
+                saveData();
+            });
+
+            $("#btnSaveUsingModel").click(function () {
+
+                if ($("#txtemployeeName").val() == "") {
+                    alert("Enter Employee Name");
+                    return false;
+                }
+
+                if ($("#txtemployeeCity").val() == "") {
+                    alert("Enter Employee City");
+                    return false;
+                }
+
+                if ($("#txtemployeeSalary").val() == "") {
+                    alert("Enter Employee Salary");
+                    return false;
+                }
+                //window.location.href = '/Employee/LoadEmp';
+                if ($("#hdnEmpId").val() == "0") {
+                    SaveUsingModel();
+                }
+                else {
+                    UpdateUsingModel();
+                }
+               
+            });
+
+
+            function saveData() {
+                var testdata = "<Root><Type>SaveEmployeeDetails</Type><Name>" + $("#txtemployeeName").val() + "</Name><City>" + $("#txtemployeeCity").val() + "</City><Salary>" + $("#txtemployeeSalary").val() + "</Salary></Root>";
+                $.ajax({
+
+                    type: "POST",
+                    url: "SaveEmp", // Location of the service 
+                    data: "{inXML :'" + testdata + "'}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                    },
+                    failure: function (msg) {
+                        alert(msg);
+                    }
+                });
+            }
+
+            function SaveUsingModel() {
+                var objEmp = {
+                   
+                    EmployeeName: $("#txtemployeeName").val(),
+                    City: $("#txtemployeeCity").val(),
+                    Salary: $("#txtemployeeSalary").val()
+                };
+                $.ajax({
+
+                    type: "POST",
+                    url: "SaveEmpUsingModel", // Location of the service 
+                    //url: "/Employee/SaveEmpUsingModel",
+                    data: objEmp,
+                    //contentType: "application/json; charset=utf-8",
+                    //dataType: "json",
+                    success: function (data) {
+                        alert();
+                        window.location.href = '/Employee/LoadEmp';
+                    },
+                    failure: function (msg) {
+                        alert(msg);
+                    }
+                });
+            }
+
+            function UpdateUsingModel() {
+                var objEmp = {
+
+                    EmpId: $("#hdnEmpId").val(),
+                    EmployeeName: $("#txtemployeeName").val(),
+                    City: $("#txtemployeeCity").val(),
+                    Salary: $("#txtemployeeSalary").val()
+                };
+                $.ajax({
+
+                    type: "POST",
+                    url: "/Employee/UpdateEmpUsingModel", // Location of the service 
+                    //url: "/Employee/SaveEmpUsingModel",
+                    data: objEmp,
+                    //contentType: "application/json; charset=utf-8",
+                    //dataType: "json",
+                    success: function (data) {
+                        alert();
+                        window.location.href = '/Employee/LoadEmp';
+                    },
+                    failure: function (msg) {
+                        alert(msg);
+                    }
+                });
+            }
+        });
+    </script>
+
+</head>
+
+<body>
+    <div>
+        @Html.HiddenFor(m => m.EmpId, new {id="hdnEmpId"})
+        @Html.LabelFor(m => m.EmployeeName, new { id = "lblempName" }) : @Html.TextBoxFor(m => m.EmployeeName, new { id = "txtemployeeName" }) <br /><br />
+
+        @Html.LabelFor(m => m.City, new { id = "lblempCity" }) : @Html.TextBoxFor(m => m.City, new { id = "txtemployeeCity" }) <br /><br />
+
+        @Html.LabelFor(m => m.Salary, new { id = "lblempSalary" }) : @Html.TextBoxFor(m => m.Salary, new { id = "txtemployeeSalary" }) <br /><br />
+
+        <input id="btnSave" type="button" value="Save" /> <br /><br />
+
+
+        <input id="btnSaveUsingModel" type="button" value="SaveUsingModel" />
+
+    </div>
+</body>
+</html>

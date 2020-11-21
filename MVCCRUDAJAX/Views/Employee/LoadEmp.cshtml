@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "Employee Details";
+}
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        LoadData()
+
+        $("#tblEmpDetail").on("click", "[id^=EditEmp_]", function () {
+            var id = this.id.split("_")[1];
+            EditEmp(id)
+        });
+
+
+        function EditEmp(id) {
+            alert(id)
+            $.ajax({
+                type: "POST",
+                url: "EditEmp", // Location of the service
+                data: "{id :'" + id + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    alert();
+                },
+                failure: function (msg) {
+                    showMessage(msg, "Error", "Error");
+                }
+            });
+        }
+
+
+
+        function LoadData() {
+
+            $.ajax({
+                type: "GET",
+                url: "GetCustomerData", // Location of the service
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+
+                    $("#tblEmpDetail  tbody").remove();
+                    $('#tblDealDetails').append('<tbody></tbody>');
+                    for (i = 0; i < data.length; i++) {
+
+                        @*var aa = "<a href="'@Url.Action("EditEmp","Employee",new {@id="-1" })'"> Edit</a>";
+                        aa = aa.replace("-1", data[i]["EmpId"]);*@
+
+                        var link = '@Url.Action("EditEmp", "Employee", new { id = "idreplace" })';
+                        link = link.replace("idreplace", data[i]["EmpId"]);
+                        
+
+
+
+                        $("#tblEmpDetail").append("<tr><td>" + data[i]["EmployeeName"] + "</td><td>" + data[i]["City"] + "</td><td>" + data[i]["Salary"] + "</td> <td><a href=" + link+"> Edit</a></td><tr/>")
+                        //$("#tblEmpDetail").append("<tr><td>" + data[i]["EmployeeName"] + "</td><td>" + data[i]["City"] + "</td><td>" + data[i]["Salary"] + "</td><td><a href='javascript:;' id='EditEmp_" + data[i]["EmpId"] + "'> Edit</a></td><tr/>")
+                    }
+                },
+                failure: function (msg) {
+                    showMessage(msg, "Error", "Error");
+                }
+            });
+        }
+    })
+</script>
+
+    <h2>LoadEmp</h2>
+        <table id="tblEmpDetail">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Salary</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+<br />
+<br />
+@Html.ActionLink("Enter Employee", "Enter", "Employee")
